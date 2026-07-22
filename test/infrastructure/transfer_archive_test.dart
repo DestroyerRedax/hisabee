@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:excel/excel.dart';
 import 'package:hisabee/core/money/money.dart';
@@ -8,6 +9,7 @@ import 'package:hisabee/domain/entities/business_entry.dart';
 import 'package:hisabee/domain/entities/profile.dart';
 import 'package:hisabee/domain/entities/transaction_record.dart';
 import 'package:hisabee/infrastructure/database/app_database.dart';
+import 'package:hisabee/infrastructure/database/db_tables.dart';
 import 'package:hisabee/infrastructure/repositories/personal_entry_repository_impl.dart';
 import 'package:hisabee/infrastructure/repositories/business_repository_impl.dart';
 import 'package:hisabee/infrastructure/repositories/profile_repository_impl.dart';
