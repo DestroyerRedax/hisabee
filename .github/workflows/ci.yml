@@ -1,0 +1,51 @@
+name: Hisabee CI Pipeline - Phase 01
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  verify-phase-01:
+    name: Phase 01 Foundation Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Pass 1 - Formatting Check
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Pass 1 - Static Analysis & Linter
+        run: flutter analyze
+
+      - name: Secret & Floating-Point Money Audit
+        run: |
+          ! grep -rn "double " lib/domain/ lib/core/money/ || (echo "Error: Floating-point currency found!" && exit 1)
+          ! grep -rn "API_KEY" lib/ || (echo "Error: Secret key pattern found!" && exit 1)
+
+      - name: Pass 2 & 3 - Unit, Integration & Performance Tests
+        run: flutter test
+
+      - name: Build Desktop Target Sanity Check
+        run: flutter build apk --debug

@@ -1,0 +1,8 @@
+# Flutter / Dart ignore
+.dart_tool/
+.idea/
+.vscode/
+.packages
+.pub-cache/
+.pub/
+build/
