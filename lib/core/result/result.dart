@@ -5,8 +5,8 @@ import 'package:meta/meta.dart';
 abstract class Result<T> {
   const Result();
 
-  factory Result.success(T data) = Success<T>;
-  factory Result.failure(String message, [Object? error, StackTrace? stackTrace]) = Failure<T>;
+  const factory Result.success(T data) = Success<T>;
+  const factory Result.failure(String message, [Object? error, StackTrace? stackTrace]) = Failure<T>;
 
   bool get isSuccess => this is Success<T>;
   bool get isFailure => this is Failure<T>;

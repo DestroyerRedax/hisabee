@@ -41,7 +41,7 @@ void main() {
 
     test('4. 5 consecutive failed attempts trigger 30-second lockout policy', () async {
       await pinService.setPin('9999');
-      final baseUs = 1700000000000000;
+      const baseUs = 1700000000000000;
 
       // 4 wrong attempts
       for (int i = 0; i < 4; i++) {

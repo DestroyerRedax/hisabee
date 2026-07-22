@@ -7,7 +7,6 @@ import 'package:hisabee/domain/entities/business_entry.dart';
 import 'package:hisabee/domain/entities/transaction_record.dart';
 import 'package:hisabee/domain/entities/expense.dart';
 import 'package:hisabee/domain/entities/profile.dart';
-import 'package:hisabee/domain/reports/unified_report_engine.dart';
 import 'package:hisabee/infrastructure/database/app_database.dart';
 import 'package:hisabee/infrastructure/repositories/personal_entry_repository_impl.dart';
 import 'package:hisabee/infrastructure/repositories/business_repository_impl.dart';
@@ -57,7 +56,7 @@ void main() {
 
     test('2. Aggregates Personal, Business, and Active Profile Transactions; EXCLUDES Expenses', () async {
       // 1. Setup Profile
-      final p1 = Profile(id: 'prof_1', name: 'Main Profile', createdAt: 100, updatedAt: 100);
+      const p1 = Profile(id: 'prof_1', name: 'Main Profile', createdAt: 100, updatedAt: 100);
       await profileRepo.saveProfile(p1);
 
       // 2. Personal Entry (Received 100.00, Paid 30.00)
@@ -88,7 +87,7 @@ void main() {
       ));
 
       // 3. Business Entries under active account (Received 200.00, Sent 50.00)
-      final bAcc = BusinessAccount(
+      const bAcc = BusinessAccount(
         id: 'b_acc1',
         category: 'cash',
         title: 'Cash',

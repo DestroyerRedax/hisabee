@@ -43,7 +43,7 @@ void main() {
     });
 
     test('1. Business: One active cash account constraint', () async {
-      final cash1 = BusinessAccount(
+      const cash1 = BusinessAccount(
         id: 'c1',
         category: 'cash',
         title: 'Cash Drawer 1',
@@ -56,7 +56,7 @@ void main() {
       final saveRes1 = await businessRepo.saveAccount(cash1);
       expect(saveRes1.isSuccess, isTrue);
 
-      final cash2 = BusinessAccount(
+      const cash2 = BusinessAccount(
         id: 'c2',
         category: 'cash',
         title: 'Cash Drawer 2',
@@ -72,7 +72,7 @@ void main() {
     });
 
     test('2. Business: Account cascade soft-delete soft-deletes linked entries & outbox', () async {
-      final bkashAcc = BusinessAccount(
+      const bkashAcc = BusinessAccount(
         id: 'b_acc1',
         category: 'bkash',
         title: 'bKash Merchant',
@@ -114,7 +114,7 @@ void main() {
     });
 
     test('3. Profile: First profile activation & prevent last profile deletion', () async {
-      final p1 = Profile(
+      const p1 = Profile(
         id: 'prof_1',
         name: 'Personal Profile',
         createdAt: 100,
@@ -136,8 +136,8 @@ void main() {
     });
 
     test('4. Profile deletion reassigns active transactions to target profile', () async {
-      final p1 = Profile(id: 'prof_1', name: 'P1', createdAt: 100, updatedAt: 100);
-      final p2 = Profile(id: 'prof_2', name: 'P2', createdAt: 200, updatedAt: 200);
+      const p1 = Profile(id: 'prof_1', name: 'P1', createdAt: 100, updatedAt: 100);
+      const p2 = Profile(id: 'prof_2', name: 'P2', createdAt: 200, updatedAt: 200);
       await profileRepo.saveProfile(p1);
       await profileRepo.saveProfile(p2);
 
@@ -168,7 +168,7 @@ void main() {
     });
 
     test('5. Transaction: "gave" direction requires phone number', () async {
-      final p1 = Profile(id: 'prof_1', name: 'P1', createdAt: 100, updatedAt: 100);
+      const p1 = Profile(id: 'prof_1', name: 'P1', createdAt: 100, updatedAt: 100);
       await profileRepo.saveProfile(p1);
 
       final invalidGaveTx = TransactionRecord(
@@ -201,7 +201,7 @@ void main() {
       expect((await expenseRepo.saveExpense(exp)).isSuccess, isTrue);
       expect((await expenseRepo.getActiveExpenses()).dataOrNull?.length, equals(1));
 
-      final rem = Reminder(
+      const rem = Reminder(
         id: 'rem_1',
         title: 'Pay Tax',
         note: 'Annual tax',

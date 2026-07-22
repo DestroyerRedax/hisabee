@@ -5,7 +5,6 @@ import 'package:excel/excel.dart';
 import 'package:hisabee/core/money/money.dart';
 import 'package:hisabee/domain/entities/personal_entry.dart';
 import 'package:hisabee/domain/entities/business_account.dart';
-import 'package:hisabee/domain/entities/business_entry.dart';
 import 'package:hisabee/domain/entities/profile.dart';
 import 'package:hisabee/domain/entities/transaction_record.dart';
 import 'package:hisabee/infrastructure/database/app_database.dart';
@@ -54,10 +53,10 @@ void main() {
 
     test('1. Round-trip XLSX export and import into clean database restores all records & relationships', () async {
       // 1. Seed data
-      final prof = Profile(id: 'prof_round', name: 'Roundtrip Profile', createdAt: 100, updatedAt: 100);
+      const prof = Profile(id: 'prof_round', name: 'Roundtrip Profile', createdAt: 100, updatedAt: 100);
       await profileRepo.saveProfile(prof);
 
-      final bAcc = BusinessAccount(
+      const bAcc = BusinessAccount(
         id: 'b_acc_round',
         category: 'cash',
         title: 'Cash',
