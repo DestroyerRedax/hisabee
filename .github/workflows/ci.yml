@@ -1,18 +1,20 @@
-name: Hisabee CI Pipeline
+name: Hisabee Complete Release CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
       - master
+    tags:
+      - 'v*'
   pull_request:
     branches:
       - main
       - master
 
 jobs:
-  verify:
-    name: Phase 01 to 05 Verification
+  release-verification:
+    name: Full Release Qualification & Build Pipeline
     runs-on: ubuntu-latest
 
     steps:
@@ -39,13 +41,19 @@ jobs:
       - name: Pass 1 - Static Analysis & Linter
         run: flutter analyze
 
-      - name: Secret & Floating-Point Money Audit
+      - name: Mandatory Floating-Point & Secret Leak Audit
         run: |
           ! grep -rn "double " lib/domain/ lib/core/money/ || (echo "Error: Floating-point currency found!" && exit 1)
           ! grep -rn "API_KEY" lib/ || (echo "Error: Secret key pattern found!" && exit 1)
 
-      - name: Pass 2 & 3 - Unit, Integration & Performance Tests
+      - name: Pass 2 & 3 - Unit, Integration & Performance Qualification Tests
         run: flutter test
 
-      - name: Build Debug Sanity Check
-        run: flutter build apk --debug
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hisabee-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
