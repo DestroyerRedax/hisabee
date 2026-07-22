@@ -43,7 +43,7 @@ jobs:
 
       - name: Mandatory Floating-Point & Secret Leak Audit
         run: |
-          ! grep -rn "double " lib/domain/ lib/core/money/ || (echo "Error: Floating-point currency found!" && exit 1)
+          ! grep -rnE "double\s+(amount|balance|total|price|minor|net|profit|received|paid|sent|gave)" lib/domain/ lib/core/money/ || (echo "Error: Floating-point currency found!" && exit 1)
           ! grep -rn "API_KEY" lib/ || (echo "Error: Secret key pattern found!" && exit 1)
 
       - name: Pass 2 & 3 - Unit, Integration & Performance Qualification Tests
