@@ -103,10 +103,10 @@ class TransactionMessageParser {
 
     // 1. Direction
     final hasReceive = _containsAny(lowerText, [
-      'receive', 'receives', 'received', 'credit', 'credited', 'deposit', 'deposited', 'cash-in', 'cash in'
+      'receive', 'receives', 'received', 'credit', 'credited', 'deposit', 'deposited', 'cash-in', 'cash in', 'cashin'
     ]);
     final hasGave = _containsAny(lowerText, [
-      'send', 'sent', 'gave', 'debit', 'debited', 'cash-out', 'cash out', 'payment'
+      'send', 'sent', 'gave', 'debit', 'debited', 'cash-out', 'cash out', 'cashout', 'payment'
     ]);
 
     String? direction;
@@ -230,7 +230,12 @@ class TransactionMessageParser {
   String? _extractBankName(String text) {
     final bankRegex = RegExp(r'\b([A-Z][a-zA-Z ]{2,38}\s+Bank)\b', caseSensitive: false);
     final match = bankRegex.firstMatch(text);
-    return match?.group(1)?.trim();
+    if (match == null) return null;
+    var name = match.group(1)!.trim();
+    if (name.toLowerCase().startsWith('from ')) {
+      name = name.substring(5).trim();
+    }
+    return name;
   }
 
   Money? _extractAmount(String text) {

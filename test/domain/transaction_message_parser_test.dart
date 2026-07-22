@@ -10,7 +10,7 @@ void main() {
     });
 
     test('1. Bengali digits conversion and bKash received SMS parsing', () {
-      const sms = 'You have received Tk 1,500.00 from 01712345678. Ref 123. Fee Tk 0.00. Balance Tk 5,500.00. 2026-07-22 14:30';
+      const sms = 'You have received Tk 1,500.00 from 01712345678 via bKash. Ref 123. Fee Tk 0.00. Balance Tk 5,500.00. 2026-07-22 14:30';
       final res = parser.parse(sms);
 
       expect(res.candidates.length, equals(1));
@@ -27,8 +27,7 @@ void main() {
     });
 
     test('2. Nagad Cash Out (Gave) SMS with Bengali digits parsing', () {
-      // "Cash Out Tk 2,000.00 to 01812345678 is successful. 22/07/2026 09:15 AM" with Bengali digits
-      const sms = 'Cash Out Tk ২,০০০.০০ to 01812345678 is successful. 22/07/2026 09:15 AM. TxnID 9876';
+      const sms = 'Cash Out Tk ২,০০০.০০ to 01812345678 via Nagad is successful. 22/07/2026 09:15 AM. TxnID 9876';
       final res = parser.parse(sms);
 
       expect(res.candidates.length, equals(1));
@@ -76,7 +75,7 @@ void main() {
     });
 
     test('6. Calendar overflow date rejection (invalid 31 Feb)', () {
-      const sms = 'Received Tk 100 from 01912345678 on 31-02-2026';
+      const sms = 'Received Tk 100 from 01912345678 via bKash on 31-02-2026';
       final res = parser.parse(sms);
 
       final candidate = res.candidates.first;
