@@ -12,7 +12,7 @@ on:
 
 jobs:
   verify:
-    name: Phase 01, 02 & 03 Verification
+    name: Phase 01 to 04 Verification
     runs-on: ubuntu-latest
 
     steps:
