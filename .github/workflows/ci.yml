@@ -1,4 +1,4 @@
-name: Hisabee CI Pipeline - Phase 01
+name: Hisabee CI Pipeline
 
 on:
   push:
@@ -11,8 +11,8 @@ on:
       - master
 
 jobs:
-  verify-phase-01:
-    name: Phase 01 Foundation Verification
+  verify:
+    name: Phase 01 & 02 Verification
     runs-on: ubuntu-latest
 
     steps:
@@ -47,5 +47,5 @@ jobs:
       - name: Pass 2 & 3 - Unit, Integration & Performance Tests
         run: flutter test
 
-      - name: Build Desktop Target Sanity Check
+      - name: Build Debug Sanity Check
         run: flutter build apk --debug
