@@ -78,11 +78,11 @@ class TransactionMessageParser {
           currentBlockStart = i + 1; // 1-based index
           currentBlockLines = [trimmed];
         } else {
-          currentBlockLines!.add(trimmed);
+          currentBlockLines?.add(trimmed);
         }
       } else {
         if (currentBlockStart != null && currentBlockLines != null) {
-          blocks.add(_SourceBlock(currentBlockStart, currentBlockLines!));
+          blocks.add(_SourceBlock(currentBlockStart, currentBlockLines));
           currentBlockStart = null;
           currentBlockLines = null;
         }
