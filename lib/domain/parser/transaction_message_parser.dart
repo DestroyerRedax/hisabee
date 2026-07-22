@@ -1,6 +1,12 @@
 import '../../core/money/money.dart';
 import 'parsed_candidate.dart';
 
+class _SourceBlock {
+  final int startLine;
+  final List<String> lines;
+  const _SourceBlock(this.startLine, this.lines);
+}
+
 /// Offline deterministic transaction message parser (PRD Section 7).
 class TransactionMessageParser {
   const TransactionMessageParser();
@@ -76,7 +82,7 @@ class TransactionMessageParser {
         }
       } else {
         if (currentBlockStart != null && currentBlockLines != null) {
-          blocks.add(_SourceBlock(currentBlockStart, currentBlockLines));
+          blocks.add(_SourceBlock(currentBlockStart, currentBlockLines!));
           currentBlockStart = null;
           currentBlockLines = null;
         }

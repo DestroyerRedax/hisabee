@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print
 import 'package:test/test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:hisabee/core/money/money.dart';

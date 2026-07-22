@@ -67,7 +67,7 @@ class Money implements Comparable<Money> {
     final finalMinor = isNegative ? -totalMinor : totalMinor;
 
     if (finalMinor.abs() > maxSupportedMinorUnits) {
-      throw FormatException(
+      throw const FormatException(
         'Parsed amount exceeds maximum supported limit of 999,999,999,900 minor units',
       );
     }
@@ -143,7 +143,7 @@ class Money implements Comparable<Money> {
     final integerPart = absMinor ~/ 100;
     final fractionalPart = (absMinor % 100).toString().padLeft(2, '0');
     final sign = isNegative ? '-' : '';
-    return '${sign}৳ $integerPart.$fractionalPart';
+    return '$sign৳ $integerPart.$fractionalPart';
   }
 
   @override

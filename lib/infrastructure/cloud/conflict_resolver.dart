@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:sqflite/sqflite.dart';
 import '../../core/result/result.dart';
 import '../../core/utils/id_generator.dart';
 import '../../domain/entities/sync_conflict_record.dart';
