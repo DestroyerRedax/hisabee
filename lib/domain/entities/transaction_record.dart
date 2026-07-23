@@ -88,15 +88,15 @@ class TransactionRecord {
       profileId: map['profile_id'] as String,
       displayParty: map['display_party'] as String?,
       number: map['number'] as String?,
-      amount: Money.fromMinorUnits(map['amount_minor'] as int),
+      amount: Money.fromMinorUnits((map['amount_minor'] as num).toInt()),
       localDate: map['local_date'] as String,
       localTime: map['local_time'] as String?,
       method: map['method'] as String,
       direction: map['direction'] as String,
       rawSource: map['raw_source'] as String?,
-      createdAt: map['created_at'] as int,
-      updatedAt: map['updated_at'] as int,
-      deletedAt: map['deleted_at'] as int?,
+      createdAt: (map['created_at'] as num).toInt(),
+      updatedAt: (map['updated_at'] as num).toInt(),
+      deletedAt: map['deleted_at'] != null ? (map['deleted_at'] as num).toInt() : null,
     );
   }
 }
