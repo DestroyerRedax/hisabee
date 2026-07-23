@@ -237,12 +237,18 @@ class XlsxImporter {
     }
 
     final headerRow = sheet.rows.first;
-    final actualHeaders = headerRow.map((c) => _cellValToStr(c?.value).toLowerCase()).toList();
+    final colIndexMap = <String, int>{};
+    for (int i = 0; i < headerRow.length; i++) {
+      final hName = _cellValToStr(headerRow[i]?.value).trim().toLowerCase();
+      if (hName.isNotEmpty) {
+        colIndexMap[hName] = i;
+      }
+    }
 
     // PRD Section 9.3: Header mismatch rejects every data row in that sheet
     for (int i = 0; i < expectedHeaders.length; i++) {
       final expected = expectedHeaders[i].trim().toLowerCase();
-      if (i >= actualHeaders.length || actualHeaders[i] != expected) {
+      if (!colIndexMap.containsKey(expected)) {
         return _SheetImportResult(0, 0, sheet.maxRows - 1); // All data rows rejected
       }
     }
@@ -258,9 +264,10 @@ class XlsxImporter {
       final map = <String, dynamic>{};
       bool isValid = true;
 
-      for (int cIndex = 0; cIndex < expectedHeaders.length; cIndex++) {
-        final colName = expectedHeaders[cIndex];
-        final cellStr = (cIndex < row.length) ? _cellValToStr(row[cIndex]?.value) : '';
+      for (int hIndex = 0; hIndex < expectedHeaders.length; hIndex++) {
+        final colName = expectedHeaders[hIndex];
+        final cIndex = colIndexMap[colName.trim().toLowerCase()];
+        final cellStr = (cIndex != null && cIndex < row.length) ? _cellValToStr(row[cIndex]?.value) : '';
 
         if (cellStr.isEmpty) {
           map[colName] = null;
@@ -284,6 +291,13 @@ class XlsxImporter {
             map[colName] = trimmed;
           }
         }
+      }
+
+      if (map['created_at'] == null && expectedHeaders.contains('created_at')) {
+        map['created_at'] = createdAtMicroseconds;
+      }
+      if (map['updated_at'] == null && expectedHeaders.contains('updated_at')) {
+        map['updated_at'] = map['created_at'] ?? createdAtMicroseconds;
       }
 
       if (!isValid || map['id'] == null) {

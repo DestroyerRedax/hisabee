@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:sqflite/sqflite.dart';
@@ -64,6 +65,8 @@ class PdfSummaryGenerator {
       ),
     );
 
-    return pdf.save();
+    final bytes = await pdf.save();
+    const comment = '% NOTICE: This PDF is a summary report only and cannot be used to restore backup data.\n';
+    return [...utf8.encode(comment), ...bytes];
   }
 }
