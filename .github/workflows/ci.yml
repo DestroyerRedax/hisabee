@@ -54,13 +54,13 @@ jobs:
         run: flutter test
 
       - name: Build Compressed Split APKs (per-ABI)
-        run: flutter build apk --release --split-per-abi --tree-shake-icons
+        run: flutter build apk --release --split-per-abi --tree-shake-icons --android-skip-build-dependency-validation
 
       - name: Build Universal Release APK
-        run: flutter build apk --release --tree-shake-icons
+        run: flutter build apk --release --tree-shake-icons --android-skip-build-dependency-validation
 
       - name: Build Android App Bundle (AAB)
-        run: flutter build appbundle --release --tree-shake-icons
+        run: flutter build appbundle --release --tree-shake-icons --android-skip-build-dependency-validation
 
       - name: Stage Release Outputs & Generate Hashes
         run: |
