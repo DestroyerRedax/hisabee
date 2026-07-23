@@ -82,21 +82,30 @@ class TransactionRecord {
     };
   }
 
+  static int _parseInt(dynamic val) {
+    if (val == null) return 0;
+    if (val is num) return val.toInt();
+    if (val is String) {
+      return (double.tryParse(val) ?? int.tryParse(val) ?? 0).toInt();
+    }
+    return 0;
+  }
+
   factory TransactionRecord.fromMap(Map<String, dynamic> map) {
     return TransactionRecord(
-      id: map['id'] as String,
-      profileId: map['profile_id'] as String,
-      displayParty: map['display_party'] as String?,
-      number: map['number'] as String?,
-      amount: Money.fromMinorUnits((map['amount_minor'] as num).toInt()),
-      localDate: map['local_date'] as String,
-      localTime: map['local_time'] as String?,
-      method: map['method'] as String,
-      direction: map['direction'] as String,
-      rawSource: map['raw_source'] as String?,
-      createdAt: (map['created_at'] as num).toInt(),
-      updatedAt: (map['updated_at'] as num).toInt(),
-      deletedAt: map['deleted_at'] != null ? (map['deleted_at'] as num).toInt() : null,
+      id: map['id'].toString(),
+      profileId: map['profile_id'].toString(),
+      displayParty: map['display_party']?.toString(),
+      number: map['number']?.toString(),
+      amount: Money.fromMinorUnits(_parseInt(map['amount_minor'])),
+      localDate: map['local_date'].toString(),
+      localTime: map['local_time']?.toString(),
+      method: map['method'].toString(),
+      direction: map['direction'].toString(),
+      rawSource: map['raw_source']?.toString(),
+      createdAt: _parseInt(map['created_at']),
+      updatedAt: _parseInt(map['updated_at']),
+      deletedAt: map['deleted_at'] != null ? _parseInt(map['deleted_at']) : null,
     );
   }
 }
