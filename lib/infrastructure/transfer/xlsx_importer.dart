@@ -239,9 +239,11 @@ class XlsxImporter {
     final headerRow = sheet.rows.first;
     final colIndexMap = <String, int>{};
     for (int i = 0; i < headerRow.length; i++) {
-      final hName = _cellValToStr(headerRow[i]?.value).trim().toLowerCase();
+      final cell = headerRow[i];
+      final colIdx = cell?.columnIndex ?? i;
+      final hName = _cellValToStr(cell?.value).trim().toLowerCase();
       if (hName.isNotEmpty) {
-        colIndexMap[hName] = i;
+        colIndexMap[hName] = colIdx;
       }
     }
 
@@ -261,13 +263,21 @@ class XlsxImporter {
       final row = sheet.rows[rowIndex];
       if (row.isEmpty) continue;
 
+      final cellByColIndex = <int, Data?>{};
+      for (final cell in row) {
+        if (cell != null) {
+          cellByColIndex[cell.columnIndex] = cell;
+        }
+      }
+
       final map = <String, dynamic>{};
       bool isValid = true;
 
       for (int hIndex = 0; hIndex < expectedHeaders.length; hIndex++) {
         final colName = expectedHeaders[hIndex];
         final cIndex = colIndexMap[colName.trim().toLowerCase()];
-        final cellStr = (cIndex != null && cIndex < row.length) ? _cellValToStr(row[cIndex]?.value) : '';
+        final cell = (cIndex != null) ? cellByColIndex[cIndex] : null;
+        final cellStr = _cellValToStr(cell?.value);
 
         if (cellStr.isEmpty) {
           map[colName] = null;
