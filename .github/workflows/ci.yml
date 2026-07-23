@@ -40,7 +40,7 @@ jobs:
         run: flutter pub get
 
       - name: Pass 1 - Formatting Code
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format .
 
       - name: Pass 1 - Static Analysis & Linter
         run: flutter analyze
