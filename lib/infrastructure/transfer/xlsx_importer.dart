@@ -350,20 +350,32 @@ class XlsxImporter {
   }
 
   static String _cellValToStr(dynamic cellValue) {
-    if (cellValue == null) return '';
+    if (cellValue == null) {
+      return '';
+    }
     try {
-      if (cellValue is String) return cellValue.trim();
-      if (cellValue is num || cellValue is bool) return cellValue.toString().trim();
+      if (cellValue is String) {
+        return cellValue.trim();
+      }
+      if (cellValue is num || cellValue is bool) {
+        return cellValue.toString().trim();
+      }
 
       final dynamic rawVal = (cellValue as dynamic).value;
       if (rawVal != null) {
-        if (rawVal is String) return rawVal.trim();
-        if (rawVal is num || rawVal is bool) return rawVal.toString().trim();
+        if (rawVal is String) {
+          return rawVal.trim();
+        }
+        if (rawVal is num || rawVal is bool) {
+          return rawVal.toString().trim();
+        }
         try {
           final textProp = (rawVal as dynamic).text;
           if (textProp != null) {
             final tStr = textProp.toString().trim();
-            if (tStr.isNotEmpty) return tStr;
+            if (tStr.isNotEmpty) {
+              return tStr;
+            }
           }
         } catch (_) {}
         final rawStr = rawVal.toString();
