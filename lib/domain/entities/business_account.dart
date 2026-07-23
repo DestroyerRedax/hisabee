@@ -76,6 +76,17 @@ class BusinessAccount {
     return 0;
   }
 
+  static int? _parseNullableInt(dynamic val) {
+    if (val == null) return null;
+    if (val is num) return val.toInt();
+    if (val is String) {
+      final s = val.trim();
+      if (s.isEmpty || s == 'null' || s == 'NULL') return null;
+      return (double.tryParse(s) ?? int.tryParse(s))?.toInt();
+    }
+    return null;
+  }
+
   factory BusinessAccount.fromMap(Map<String, dynamic> map) {
     return BusinessAccount(
       id: map['id']?.toString() ?? '',
@@ -86,7 +97,7 @@ class BusinessAccount {
       closingBalance: Money.fromMinorUnits(_parseInt(map['closing_minor'])),
       createdAt: _parseInt(map['created_at']),
       updatedAt: _parseInt(map['updated_at']),
-      deletedAt: map['deleted_at'] != null ? _parseInt(map['deleted_at']) : null,
+      deletedAt: _parseNullableInt(map['deleted_at']),
     );
   }
 }

@@ -151,6 +151,17 @@ class Reminder {
     return 0;
   }
 
+  static int? _parseNullableInt(dynamic val) {
+    if (val == null) return null;
+    if (val is num) return val.toInt();
+    if (val is String) {
+      final s = val.trim();
+      if (s.isEmpty || s == 'null' || s == 'NULL') return null;
+      return (double.tryParse(s) ?? int.tryParse(s))?.toInt();
+    }
+    return null;
+  }
+
   factory Reminder.fromMap(Map<String, dynamic> map) {
     return Reminder(
       id: map['id']?.toString() ?? '',
@@ -163,7 +174,7 @@ class Reminder {
       isEnabled: _parseInt(map['is_enabled']) == 1,
       createdAt: _parseInt(map['created_at']),
       updatedAt: _parseInt(map['updated_at']),
-      deletedAt: map['deleted_at'] != null ? _parseInt(map['deleted_at']) : null,
+      deletedAt: _parseNullableInt(map['deleted_at']),
     );
   }
 }
