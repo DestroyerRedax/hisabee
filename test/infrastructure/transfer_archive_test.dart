@@ -118,16 +118,16 @@ void main() {
 
       expect(importRes.isSuccess, isTrue);
       final stats = importRes.dataOrNull!;
-      expect(stats.acceptedCount, greaterThanOrEqualTo(1));
+      expect(stats.acceptedCount >= 1, isTrue, reason: 'ImportStats -> accepted:${stats.acceptedCount}, dup:${stats.duplicateCount}, rej:${stats.rejectedCount}');
 
       // 5. Verify restored records
       final restoredProfs = await profileRepo.getActiveProfiles();
       final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
-      expect(restoredProfs.isSuccess, isTrue, reason: restoredProfs.errorMessageOrNull ?? restoredProfs.toString());
-      expect(restoredProfs.dataOrNull?.length, equals(1), reason: 'restoredProfs actual length is ${restoredProfs.dataOrNull?.length}, values: ${restoredProfs.dataOrNull?.map((p) => '${p.id}:${p.name}').toList()}');
-      expect(restoredTx.isSuccess, isTrue, reason: restoredTx.errorMessageOrNull ?? restoredTx.toString());
-      expect(restoredTx.dataOrNull?.length, equals(1), reason: 'Import stats: accepted=${stats.acceptedCount}, dup=${stats.duplicateCount}, rej=${stats.rejectedCount}');
-      expect(restoredTx.dataOrNull?.first.id, equals('tx_round'));
+      expect(restoredProfs.isSuccess, isTrue, reason: 'ProfileRepo error: ${restoredProfs.errorMessageOrNull}');
+      expect(restoredProfs.dataOrNull?.length == 1, isTrue, reason: 'restoredProfs count: ${restoredProfs.dataOrNull?.length}, items: ${restoredProfs.dataOrNull?.map((p) => '${p.id}:${p.name}').toList()}');
+      expect(restoredTx.isSuccess, isTrue, reason: 'TxRepo error: ${restoredTx.errorMessageOrNull}');
+      expect(restoredTx.dataOrNull?.length == 1, isTrue, reason: 'restoredTx count: ${restoredTx.dataOrNull?.length}, items: ${restoredTx.dataOrNull?.map((t) => t.id).toList()}');
+      expect(restoredTx.dataOrNull?.first.id == 'tx_round', isTrue);
     });
 
     test('2. PDF Summary output contains explicit non-backup disclaimer', () async {
