@@ -353,7 +353,15 @@ class XlsxImporter {
     if (cellValue == null) return '';
     if (cellValue is TextCellValue) {
       final span = cellValue.value;
-      return (span.text ?? span.toString()).trim();
+      if (span.text != null && span.text!.isNotEmpty) {
+        return span.text!.trim();
+      }
+      final str = span.toString();
+      final match = RegExp(r'text:\s*["\']?([^,\)\s"\']+)', caseSensitive: false).firstMatch(str);
+      if (match != null && match.group(1) != null) {
+        return match.group(1)!.trim();
+      }
+      return str.trim();
     }
     if (cellValue is IntCellValue) return cellValue.value.toString().trim();
     if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
