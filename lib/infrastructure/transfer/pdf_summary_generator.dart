@@ -10,7 +10,7 @@ class PdfSummaryGenerator {
   const PdfSummaryGenerator({required this.appDatabase});
 
   Future<List<int>> generateSummaryPdf({required int createdAtMicroseconds}) async {
-    final pdf = pw.Document(deflate: null);
+    final pdf = pw.Document(deflate: (List<int> data) => data);
     final db = appDatabase.database;
 
     final pCount = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM ${DbTables.personalEntries} WHERE deleted_at IS NULL')) ?? 0;

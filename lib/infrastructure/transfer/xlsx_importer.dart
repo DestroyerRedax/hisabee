@@ -225,17 +225,24 @@ class XlsxImporter {
     required Transaction txn,
     required int createdAtMicroseconds,
   }) async {
-    final sheet = excel.tables[sheetName];
+    Sheet? sheet;
+    for (final entry in excel.tables.entries) {
+      if (entry.key.trim().toLowerCase() == sheetName.trim().toLowerCase()) {
+        sheet = entry.value;
+        break;
+      }
+    }
     if (sheet == null || sheet.maxRows <= 1) {
       return const _SheetImportResult(0, 0, 0);
     }
 
     final headerRow = sheet.rows.first;
-    final actualHeaders = headerRow.map((c) => _cellValToStr(c?.value)).toList();
+    final actualHeaders = headerRow.map((c) => _cellValToStr(c?.value).toLowerCase()).toList();
 
     // PRD Section 9.3: Header mismatch rejects every data row in that sheet
     for (int i = 0; i < expectedHeaders.length; i++) {
-      if (i >= actualHeaders.length || actualHeaders[i] != expectedHeaders[i]) {
+      final expected = expectedHeaders[i].trim().toLowerCase();
+      if (i >= actualHeaders.length || actualHeaders[i] != expected) {
         return _SheetImportResult(0, 0, sheet.maxRows - 1); // All data rows rejected
       }
     }
@@ -320,7 +327,8 @@ class XlsxImporter {
   static String _cellValToStr(dynamic cellValue) {
     if (cellValue == null) return '';
     if (cellValue is TextCellValue) {
-      return (cellValue.value.text ?? '').trim();
+      final span = cellValue.value;
+      return (span.text ?? span.toString()).trim();
     }
     if (cellValue is IntCellValue) return cellValue.value.toString().trim();
     if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
