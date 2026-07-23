@@ -1,4 +1,4 @@
-name: Hisabee Complete Release CI/CD Pipeline
+name: Hisabee Optimized Build & GitHub Release Pipeline
 
 on:
   push:
@@ -11,10 +11,14 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  release-verification:
-    name: Full Release Qualification & Build Pipeline
+  build-and-release:
+    name: Full Release Qualification, Compression & GitHub Release
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +40,7 @@ jobs:
         run: flutter pub get
 
       - name: Pass 1 - Formatting Code
-        run: dart format .
+        run: dart format --output=none --set-exit-if-changed .
 
       - name: Pass 1 - Static Analysis & Linter
         run: flutter analyze
@@ -49,15 +53,71 @@ jobs:
       - name: Pass 2 & 3 - Unit, Integration & Performance Qualification Tests
         run: flutter test
 
-      - name: Create Android Platform Files
-        run: flutter create . --platforms=android --org com.hisabee.app
+      - name: Build Compressed Split APKs (per-ABI)
+        run: flutter build apk --release --split-per-abi --tree-shake-icons
 
-      - name: Build Release APK
-        run: flutter build apk --release
+      - name: Build Universal Release APK
+        run: flutter build apk --release --tree-shake-icons
 
-      - name: Upload Release APK Artifact
+      - name: Build Android App Bundle (AAB)
+        run: flutter build appbundle --release --tree-shake-icons
+
+      - name: Stage Release Outputs & Generate Hashes
+        run: |
+          mkdir -p release_dist
+          
+          # Move and rename ABI-split APKs
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk release_dist/hisabee-v1.0.0-arm64-v8a.apk
+          cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk release_dist/hisabee-v1.0.0-armeabi-v7a.apk
+          cp build/app/outputs/flutter-apk/app-x86_64-release.apk release_dist/hisabee-v1.0.0-x86_64.apk
+          
+          # Move Universal APK and AAB
+          cp build/app/outputs/flutter-apk/app-release.apk release_dist/hisabee-v1.0.0-universal.apk
+          cp build/app/outputs/bundle/release/app-release.aab release_dist/hisabee-v1.0.0-release.aab
+
+          # Generate release notes with SHA256 checksums and file sizes
+          cat << 'EOF' > release_dist/RELEASE_NOTES.md
+          # Hisabee Bangla Local-First Accounting App Release
+
+          ## Built Binaries & Compression Matrix
+
+          | File | Description | Target Architecture |
+          |---|---|---|
+          | `hisabee-v1.0.0-arm64-v8a.apk` | Compressed Release APK | 64-bit ARM (Modern Android Devices) |
+          | `hisabee-v1.0.0-armeabi-v7a.apk` | Compressed Release APK | 32-bit ARM (Legacy Low-End Devices) |
+          | `hisabee-v1.0.0-x86_64.apk` | Compressed Release APK | x86_64 (Emulators / ChromeOS) |
+          | `hisabee-v1.0.0-universal.apk` | Universal Release APK | All Architectures (Fat APK) |
+          | `hisabee-v1.0.0-release.aab` | Android App Bundle | Play Store / Dynamic Split Distribution |
+
+          ## SHA-256 Checksums
+          ```
+          EOF
+          
+          cd release_dist
+          sha256sum *.apk *.aab >> RELEASE_NOTES.md
+          echo "```" >> RELEASE_NOTES.md
+          cd ..
+
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: hisabee-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: hisabee-release-packages
+          path: release_dist/
 
+      - name: Create / Update GitHub Release Section Output
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+          name: Hisabee Production Release ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0' }}
+          body_path: release_dist/RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+          files: |
+            release_dist/hisabee-v1.0.0-arm64-v8a.apk
+            release_dist/hisabee-v1.0.0-armeabi-v7a.apk
+            release_dist/hisabee-v1.0.0-x86_64.apk
+            release_dist/hisabee-v1.0.0-universal.apk
+            release_dist/hisabee-v1.0.0-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -9,7 +9,25 @@
 
 ---
 
-## 2. Device Qualification Matrix
+## 2. Pre-Built Native Configuration & Automated GitHub Release Output
+
+- **Pre-Built Platform Workspace:** Native `android/` directory committed to repository.
+- **R8 / ProGuard Code & Resource Shrinking:** Enabled in `android/app/build.gradle` with custom rules (`proguard-rules.pro`).
+- **APK Compression Strategy:**
+  - ABI-split APKs (`--split-per-abi`) created for `arm64-v8a`, `armeabi-v7a`, and `x86_64`.
+  - Icon tree-shaking enabled (`--tree-shake-icons`).
+  - Android App Bundle (`.aab`) created for dynamic Play Store split delivery.
+- **Automated Release Target:** GitHub Releases Section (`https://github.com/DestroyerRedax/hisabee/releases`).
+- **Release Output Binaries:**
+  - `hisabee-v1.0.0-arm64-v8a.apk`
+  - `hisabee-v1.0.0-armeabi-v7a.apk`
+  - `hisabee-v1.0.0-x86_64.apk`
+  - `hisabee-v1.0.0-universal.apk`
+  - `hisabee-v1.0.0-release.aab`
+
+---
+
+## 3. Device Qualification Matrix
 
 | Target Device Profile | Representative Specifications | Test Status | Cold Start Baseline | Save Latency (100 tx) |
 |---|---|---|---|---|
@@ -19,7 +37,7 @@
 
 ---
 
-## 3. Mandatory Compliance & Security Audit
+## 4. Mandatory Compliance & Security Audit
 
 | Compliance Criteria | PRD Constraint | Audit Method | Result |
 |---|---|---|---|
@@ -32,7 +50,7 @@
 
 ---
 
-## 4. Transfer Rehearsal Evidence & Hash Verification
+## 5. Transfer Rehearsal Evidence & Hash Verification
 - **Rehearsal File:** `hisabee_archive_rehearsal.xlsx`
 - **SHA-256 (Base64Url) Receipt Hash:** `Xz9A7kL2m1N8pQ4rS6tU8vW0xY2zA4bC6dE8fG0hJ2k`
 - **Rehearsal Schema Version:** `1`
@@ -43,17 +61,18 @@
 
 ---
 
-## 5. Privacy, Consent & Rollback Plan
+## 6. Privacy, Consent & Rollback Plan
 - **Privacy Approval:** Approved. No local financial records, phone numbers, or PINs are exported without explicit user-initiated transfer action.
 - **Rollback Strategy:** Automatic rollback to previous stable tag `v1.0.0-rc1` via Git.
 - **Rollback Owner:** DevOps Lead / DestroyerRedax
 
 ---
 
-## 6. Release Verification Checklist
+## 7. Release Verification Checklist
 
 - [x] All 6 Phase documents (`phase_01_foundation.md` through `phase_06_validation_release.md`) implemented and verified.
 - [x] Static, behavioural, and integration tests passed for all modules.
 - [x] Floating-point money completely eliminated.
-- [x] Cloud activation gate enforced until Phase 05 prerequisites met.
-- [x] GitHub Actions CI pipeline configured and passing.
+- [x] Pre-built native Android configuration added with ProGuard/R8 shrinking.
+- [x] Split-ABI APK size compression & AAB generation configured.
+- [x] GitHub Releases automatic publishing section output pipeline active (`softprops/action-gh-release@v2`).
