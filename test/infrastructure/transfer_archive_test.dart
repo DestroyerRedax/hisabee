@@ -123,7 +123,7 @@ void main() {
       // 5. Verify restored records
       final restoredProfs = await profileRepo.getActiveProfiles();
       final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
-      expect(restoredProfs.isSuccess, isTrue);
+      expect(restoredProfs.isSuccess, isTrue, reason: restoredProfs.errorMessageOrNull ?? restoredProfs.toString());
       expect(restoredProfs.dataOrNull?.length, equals(1), reason: 'restoredProfs actual length is ${restoredProfs.dataOrNull?.length}, values: ${restoredProfs.dataOrNull?.map((p) => '${p.id}:${p.name}').toList()}');
       expect(restoredTx.isSuccess, isTrue, reason: restoredTx.errorMessageOrNull ?? restoredTx.toString());
       expect(restoredTx.dataOrNull?.length, equals(1), reason: 'Import stats: accepted=${stats.acceptedCount}, dup=${stats.duplicateCount}, rej=${stats.rejectedCount}');
