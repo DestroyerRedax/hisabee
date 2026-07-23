@@ -291,7 +291,8 @@ class XlsxImporter {
               colName.endsWith('_at') ||
               colName == 'is_fired' ||
               colName == 'is_enabled') {
-            final parsedInt = int.tryParse(trimmed);
+            final parsedNum = double.tryParse(trimmed);
+            final parsedInt = parsedNum?.toInt();
             if (parsedInt == null && trimmed != 'null') {
               isValid = false; // Invalid required integer field
               break;
