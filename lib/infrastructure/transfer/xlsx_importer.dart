@@ -320,7 +320,7 @@ class XlsxImporter {
   static String _cellValToStr(dynamic cellValue) {
     if (cellValue == null) return '';
     if (cellValue is TextCellValue) {
-      return cellValue.value.text.trim();
+      return (cellValue.value.text ?? '').trim();
     }
     if (cellValue is IntCellValue) return cellValue.value.toString().trim();
     if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
