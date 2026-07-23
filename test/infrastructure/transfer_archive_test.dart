@@ -152,7 +152,7 @@ void main() {
         DbTables.reminders,
         DbTables.syncOutbox,
         DbTables.syncConflicts,
-        DbTables.syncState,
+        DbTables.transferReceipts,
       ];
 
       for (final tableName in tables) {
