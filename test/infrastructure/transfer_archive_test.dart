@@ -125,7 +125,7 @@ void main() {
       final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
       expect(restoredProfs.isSuccess, isTrue);
       expect(restoredProfs.dataOrNull?.length, equals(1));
-      expect(restoredTx.isSuccess, isTrue, reason: restoredTx.errorOrNull?.message ?? restoredTx.toString());
+      expect(restoredTx.isSuccess, isTrue, reason: restoredTx.errorMessageOrNull ?? restoredTx.toString());
       expect(restoredTx.dataOrNull?.length, equals(1), reason: 'Import stats: accepted=${stats.acceptedCount}, dup=${stats.duplicateCount}, rej=${stats.rejectedCount}');
       expect(restoredTx.dataOrNull?.first.id, equals('tx_round'));
     });
