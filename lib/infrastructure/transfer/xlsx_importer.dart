@@ -319,19 +319,23 @@ class XlsxImporter {
 
   static String _cellValToStr(dynamic cellValue) {
     if (cellValue == null) return '';
-    if (cellValue is TextCellValue) return cellValue.value.trim();
+    if (cellValue is TextCellValue) {
+      return cellValue.value.text.trim();
+    }
     if (cellValue is IntCellValue) return cellValue.value.toString().trim();
     if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
     if (cellValue is BoolCellValue) return cellValue.value.toString().trim();
     if (cellValue is DateCellValue) return cellValue.year.toString().trim();
     try {
       final val = (cellValue as dynamic).value;
-      if (val != null) return val.toString().trim();
+      if (val != null) {
+        if (val is String) return val.trim();
+        final textProp = (val as dynamic).text;
+        if (textProp != null) return textProp.toString().trim();
+        return val.toString().trim();
+      }
     } catch (_) {}
     final str = cellValue.toString().trim();
-    if (str.startsWith('TextCellValue(') && str.endsWith(')')) {
-      return str.substring('TextCellValue('.length, str.length - 1).trim();
-    }
     return str;
   }
 }
