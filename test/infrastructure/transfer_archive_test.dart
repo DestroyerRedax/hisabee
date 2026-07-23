@@ -54,7 +54,8 @@ void main() {
     test('1. Round-trip XLSX export and import into clean database restores all records & relationships', () async {
       // 1. Seed data
       const prof = Profile(id: 'prof_round', name: 'Roundtrip Profile', createdAt: 100, updatedAt: 100);
-      await profileRepo.saveProfile(prof);
+      final r1 = await profileRepo.saveProfile(prof);
+      expect(r1.isSuccess, isTrue, reason: 'saveProfile error: ${r1.errorMessageOrNull}');
 
       const bAcc = BusinessAccount(
         id: 'b_acc_round',
@@ -65,7 +66,8 @@ void main() {
         createdAt: 100,
         updatedAt: 100,
       );
-      await businessRepo.saveAccount(bAcc);
+      final r2 = await businessRepo.saveAccount(bAcc);
+      expect(r2.isSuccess, isTrue, reason: 'saveAccount error: ${r2.errorMessageOrNull}');
 
       final pEntry = PersonalEntry(
         id: 'p_round',
@@ -79,7 +81,8 @@ void main() {
         createdAt: 100,
         updatedAt: 100,
       );
-      await personalRepo.save(pEntry);
+      final r3 = await personalRepo.save(pEntry);
+      expect(r3.isSuccess, isTrue, reason: 'savePersonal error: ${r3.errorMessageOrNull}');
 
       final tx = TransactionRecord(
         id: 'tx_round',
@@ -91,7 +94,8 @@ void main() {
         createdAt: 100,
         updatedAt: 100,
       );
-      await txRepo.saveTransaction(tx);
+      final r4 = await txRepo.saveTransaction(tx);
+      expect(r4.isSuccess, isTrue, reason: 'saveTx error: ${r4.errorMessageOrNull}');
 
       // 2. Export XLSX archive
       final exportRes = await exporter.exportArchive(createdAtMicroseconds: 200);
@@ -116,27 +120,20 @@ void main() {
         createdAtMicroseconds: 300,
       );
 
-      expect(importRes.isSuccess, isTrue);
+      expect(importRes.isSuccess, isTrue, reason: 'importArchive error: ${importRes.errorMessageOrNull}');
       final stats = importRes.dataOrNull!;
-      expect(stats.acceptedCount >= 1, isTrue, reason: 'ImportStats -> accepted:${stats.acceptedCount}, dup:${stats.duplicateCount}, rej:${stats.rejectedCount}');
+      expect(stats.acceptedCount, greaterThanOrEqualTo(1), reason: 'ImportStats -> accepted:${stats.acceptedCount}, dup:${stats.duplicateCount}, rej:${stats.rejectedCount}');
 
       // 5. Verify restored records
       final restoredProfs = await profileRepo.getActiveProfiles();
-      final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
-      if (!restoredProfs.isSuccess) {
-        throw Exception('ProfileRepo ERROR DETAILS -> ${restoredProfs.errorMessageOrNull}');
-      }
+      expect(restoredProfs.isSuccess, isTrue, reason: 'ProfileRepo error: ${restoredProfs.errorMessageOrNull}');
       final profList = restoredProfs.dataOrNull ?? [];
-      if (profList.length != 1) {
-        throw Exception('restoredProfs COUNT MISMATCH -> count=${profList.length}, items=${profList.map((p) => '${p.id}:${p.name}').toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
-      }
-      if (!restoredTx.isSuccess) {
-        throw Exception('TxRepo ERROR DETAILS -> ${restoredTx.errorMessageOrNull}');
-      }
+      expect(profList.length, equals(1), reason: 'profList items: ${profList.map((p) => '${p.id}:${p.name}').toList()}');
+
+      final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
+      expect(restoredTx.isSuccess, isTrue, reason: 'TxRepo error: ${restoredTx.errorMessageOrNull}');
       final txList = restoredTx.dataOrNull ?? [];
-      if (txList.length != 1) {
-        throw Exception('restoredTx COUNT MISMATCH -> count=${txList.length}, items=${txList.map((t) => t.id).toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
-      }
+      expect(txList.length, equals(1), reason: 'txList items: ${txList.map((t) => t.id).toList()}');
       expect(txList.first.id, equals('tx_round'));
     });
 
