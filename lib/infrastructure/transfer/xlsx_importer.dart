@@ -231,7 +231,7 @@ class XlsxImporter {
     }
 
     final headerRow = sheet.rows.first;
-    final actualHeaders = headerRow.map((c) => c?.value?.toString().trim() ?? '').toList();
+    final actualHeaders = headerRow.map((c) => _cellValToStr(c?.value)).toList();
 
     // PRD Section 9.3: Header mismatch rejects every data row in that sheet
     for (int i = 0; i < expectedHeaders.length; i++) {
@@ -253,12 +253,12 @@ class XlsxImporter {
 
       for (int cIndex = 0; cIndex < expectedHeaders.length; cIndex++) {
         final colName = expectedHeaders[cIndex];
-        final cellValue = (cIndex < row.length) ? row[cIndex]?.value?.toString() : null;
+        final cellStr = (cIndex < row.length) ? _cellValToStr(row[cIndex]?.value) : '';
 
-        if (cellValue == null || cellValue.trim().isEmpty) {
+        if (cellStr.isEmpty) {
           map[colName] = null;
         } else {
-          final trimmed = cellValue.trim();
+          final trimmed = cellStr;
           if (colName == 'id' && trimmed.isEmpty) {
             isValid = false;
             break;
@@ -316,6 +316,24 @@ class XlsxImporter {
 
     return _SheetImportResult(accepted, duplicate, rejected);
   }
+
+  static String _cellValToStr(dynamic cellValue) {
+    if (cellValue == null) return '';
+    if (cellValue is TextCellValue) return cellValue.value.trim();
+    if (cellValue is IntCellValue) return cellValue.value.toString().trim();
+    if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
+    if (cellValue is BoolCellValue) return cellValue.value.toString().trim();
+    if (cellValue is DateCellValue) return cellValue.year.toString().trim();
+    try {
+      final val = (cellValue as dynamic).value;
+      if (val != null) return val.toString().trim();
+    } catch (_) {}
+    final str = cellValue.toString().trim();
+    if (str.startsWith('TextCellValue(') && str.endsWith(')')) {
+      return str.substring('TextCellValue('.length, str.length - 1).trim();
+    }
+    return str;
+  }
 }
 
 class _SheetImportResult {
@@ -325,3 +343,4 @@ class _SheetImportResult {
 
   const _SheetImportResult(this.accepted, this.duplicate, this.rejected);
 }
+
