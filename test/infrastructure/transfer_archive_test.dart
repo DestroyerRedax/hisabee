@@ -123,11 +123,21 @@ void main() {
       // 5. Verify restored records
       final restoredProfs = await profileRepo.getActiveProfiles();
       final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
-      expect(restoredProfs.isSuccess, isTrue, reason: 'ProfileRepo error: ${restoredProfs.errorMessageOrNull}');
-      expect(restoredProfs.dataOrNull?.length == 1, isTrue, reason: 'restoredProfs count: ${restoredProfs.dataOrNull?.length}, items: ${restoredProfs.dataOrNull?.map((p) => '${p.id}:${p.name}').toList()}');
-      expect(restoredTx.isSuccess, isTrue, reason: 'TxRepo error: ${restoredTx.errorMessageOrNull}');
-      expect(restoredTx.dataOrNull?.length == 1, isTrue, reason: 'restoredTx count: ${restoredTx.dataOrNull?.length}, items: ${restoredTx.dataOrNull?.map((t) => t.id).toList()}');
-      expect(restoredTx.dataOrNull?.first.id == 'tx_round', isTrue);
+      if (!restoredProfs.isSuccess) {
+        fail('ProfileRepo error: ${restoredProfs.errorMessageOrNull}');
+      }
+      final profList = restoredProfs.dataOrNull ?? [];
+      if (profList.length != 1) {
+        fail('restoredProfs mismatch: count=${profList.length}, items=${profList.map((p) => '${p.id}:${p.name}').toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
+      }
+      if (!restoredTx.isSuccess) {
+        fail('TxRepo error: ${restoredTx.errorMessageOrNull}');
+      }
+      final txList = restoredTx.dataOrNull ?? [];
+      if (txList.length != 1) {
+        fail('restoredTx mismatch: count=${txList.length}, items=${txList.map((t) => t.id).toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
+      }
+      expect(txList.first.id, equals('tx_round'));
     });
 
     test('2. PDF Summary output contains explicit non-backup disclaimer', () async {
