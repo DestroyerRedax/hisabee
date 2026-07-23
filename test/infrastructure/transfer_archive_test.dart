@@ -124,18 +124,18 @@ void main() {
       final restoredProfs = await profileRepo.getActiveProfiles();
       final restoredTx = await txRepo.getActiveTransactionsForProfile('prof_round');
       if (!restoredProfs.isSuccess) {
-        fail('ProfileRepo error: ${restoredProfs.errorMessageOrNull}');
+        throw Exception('ProfileRepo ERROR DETAILS -> ${restoredProfs.errorMessageOrNull}');
       }
       final profList = restoredProfs.dataOrNull ?? [];
       if (profList.length != 1) {
-        fail('restoredProfs mismatch: count=${profList.length}, items=${profList.map((p) => '${p.id}:${p.name}').toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
+        throw Exception('restoredProfs COUNT MISMATCH -> count=${profList.length}, items=${profList.map((p) => '${p.id}:${p.name}').toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
       }
       if (!restoredTx.isSuccess) {
-        fail('TxRepo error: ${restoredTx.errorMessageOrNull}');
+        throw Exception('TxRepo ERROR DETAILS -> ${restoredTx.errorMessageOrNull}');
       }
       final txList = restoredTx.dataOrNull ?? [];
       if (txList.length != 1) {
-        fail('restoredTx mismatch: count=${txList.length}, items=${txList.map((t) => t.id).toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
+        throw Exception('restoredTx COUNT MISMATCH -> count=${txList.length}, items=${txList.map((t) => t.id).toList()}, importStats=acc:${stats.acceptedCount},dup:${stats.duplicateCount},rej:${stats.rejectedCount}');
       }
       expect(txList.first.id, equals('tx_round'));
     });
