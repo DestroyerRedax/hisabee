@@ -333,7 +333,7 @@ class XlsxImporter {
       raw = span.text ?? '';
       if (raw.isEmpty) {
         final str = span.toString();
-        final match = RegExp(r'text:\s*["\']?([^,\)\s]+)').firstMatch(str);
+        final match = RegExp(r"text:\s*['\"]?([^,\)\s]+)").firstMatch(str);
         raw = match != null ? (match.group(1) ?? str) : str;
       }
     } else if (cellValue is IntCellValue) {
@@ -367,7 +367,7 @@ class XlsxImporter {
       raw = raw.substring('TextCellValue('.length, raw.length - 1).trim();
     }
     if (raw.startsWith('TextSpan(')) {
-      final match = RegExp(r'text:\s*["\']?([^,\)\s]+)').firstMatch(raw);
+      final match = RegExp(r"text:\s*['\"]?([^,\)\s]+)").firstMatch(raw);
       if (match != null) {
         raw = match.group(1) ?? raw;
       }
