@@ -351,29 +351,27 @@ class XlsxImporter {
 
   static String _cellValToStr(dynamic cellValue) {
     if (cellValue == null) return '';
-    if (cellValue is TextCellValue) {
-      final span = cellValue.value;
-      if (span.text != null && span.text!.isNotEmpty) {
-        return span.text!.trim();
-      }
-      final str = span.toString();
-      final match = RegExp(r'''text:\s*["']?([^,\)\s"']+)''', caseSensitive: false).firstMatch(str);
-      if (match != null && match.group(1) != null) {
-        return match.group(1)!.trim();
-      }
-      return str.trim();
-    }
-    if (cellValue is IntCellValue) return cellValue.value.toString().trim();
-    if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
-    if (cellValue is BoolCellValue) return cellValue.value.toString().trim();
-    if (cellValue is DateCellValue) return cellValue.year.toString().trim();
     try {
-      final val = (cellValue as dynamic).value;
-      if (val != null) {
-        if (val is String) return val.trim();
-        final textProp = (val as dynamic).text;
-        if (textProp != null) return textProp.toString().trim();
-        return val.toString().trim();
+      if (cellValue is String) return cellValue.trim();
+      if (cellValue is num || cellValue is bool) return cellValue.toString().trim();
+
+      final dynamic rawVal = (cellValue as dynamic).value;
+      if (rawVal != null) {
+        if (rawVal is String) return rawVal.trim();
+        if (rawVal is num || rawVal is bool) return rawVal.toString().trim();
+        try {
+          final textProp = (rawVal as dynamic).text;
+          if (textProp != null) {
+            final tStr = textProp.toString().trim();
+            if (tStr.isNotEmpty) return tStr;
+          }
+        } catch (_) {}
+        final rawStr = rawVal.toString();
+        final match = RegExp(r'''text:\s*["']?([^,\)\s"']+)''', caseSensitive: false).firstMatch(rawStr);
+        if (match != null && match.group(1) != null) {
+          return match.group(1)!.trim();
+        }
+        return rawStr.trim();
       }
     } catch (_) {}
     return cellValue.toString().trim();
