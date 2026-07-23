@@ -49,6 +49,9 @@ jobs:
       - name: Pass 2 & 3 - Unit, Integration & Performance Qualification Tests
         run: flutter test
 
+      - name: Create Android Platform Files
+        run: flutter create . --platforms=android --org com.hisabee.app
+
       - name: Build Release APK
         run: flutter build apk --release
 
@@ -57,3 +60,4 @@ jobs:
         with:
           name: hisabee-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+

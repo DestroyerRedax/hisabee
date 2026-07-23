@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 /// Value object representing money using integer minor units (Poisha).
-/// 
+///
 /// 1 Bangladeshi Taka = 100 Poisha.
 /// Floating-point types (double, float) are strictly prohibited for financial
 /// storage, calculation, or display math.
