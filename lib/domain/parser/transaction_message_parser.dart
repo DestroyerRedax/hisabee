@@ -245,13 +245,27 @@ class TransactionMessageParser {
       caseSensitive: false,
     );
     final contextualMatches = contextualRegex.allMatches(text);
-    if (contextualMatches.isNotEmpty) {
-      final lastMatch = contextualMatches.last;
-      final rawNum = lastMatch.group(1)!;
+    for (final match in contextualMatches) {
+      final matchStart = match.start;
+      final prefix = text.substring(matchStart > 12 ? matchStart - 12 : 0, matchStart).toLowerCase();
+      if (prefix.contains('balance') || prefix.contains('bal') || prefix.contains('fee')) {
+        continue;
+      }
+      final rawNum = match.group(1)!;
       try {
         final money = Money.parse(rawNum);
         if (money.isPositive) return money;
       } catch (_) {}
+    }
+
+    if (contextualMatches.isNotEmpty) {
+      for (final match in contextualMatches) {
+        final rawNum = match.group(1)!;
+        try {
+          final money = Money.parse(rawNum);
+          if (money.isPositive) return money;
+        } catch (_) {}
+      }
     }
 
     // 2. Try trailing number followed by currency marker
@@ -260,9 +274,13 @@ class TransactionMessageParser {
       caseSensitive: false,
     );
     final trailingMatches = trailingRegex.allMatches(text);
-    if (trailingMatches.isNotEmpty) {
-      final lastMatch = trailingMatches.last;
-      final rawNum = lastMatch.group(1)!;
+    for (final match in trailingMatches) {
+      final matchStart = match.start;
+      final prefix = text.substring(matchStart > 12 ? matchStart - 12 : 0, matchStart).toLowerCase();
+      if (prefix.contains('balance') || prefix.contains('bal') || prefix.contains('fee')) {
+        continue;
+      }
+      final rawNum = match.group(1)!;
       try {
         final money = Money.parse(rawNum);
         if (money.isPositive) return money;

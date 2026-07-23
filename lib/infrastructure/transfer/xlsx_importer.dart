@@ -340,53 +340,24 @@ class XlsxImporter {
 
   static String _cellValToStr(dynamic cellValue) {
     if (cellValue == null) return '';
-
-    String raw = '';
     if (cellValue is TextCellValue) {
       final span = cellValue.value;
-      raw = span.text ?? '';
-      if (raw.isEmpty) {
-        final str = span.toString();
-        final match = RegExp(r'''text:\s*['"]?([^,\)\s]+)''').firstMatch(str);
-        raw = match != null ? (match.group(1) ?? str) : str;
-      }
-    } else if (cellValue is IntCellValue) {
-      raw = cellValue.value.toString();
-    } else if (cellValue is DoubleCellValue) {
-      raw = cellValue.value.toString();
-    } else if (cellValue is BoolCellValue) {
-      raw = cellValue.value.toString();
-    } else if (cellValue is DateCellValue) {
-      raw = cellValue.year.toString();
-    } else {
-      try {
-        final val = (cellValue as dynamic).value;
-        if (val != null) {
-          if (val is String) {
-            raw = val;
-          } else {
-            final textProp = (val as dynamic).text;
-            raw = textProp != null ? textProp.toString() : val.toString();
-          }
-        } else {
-          raw = cellValue.toString();
-        }
-      } catch (_) {
-        raw = cellValue.toString();
-      }
+      return (span.text ?? span.toString()).trim();
     }
-
-    raw = raw.trim();
-    if (raw.startsWith('TextCellValue(') && raw.endsWith(')')) {
-      raw = raw.substring('TextCellValue('.length, raw.length - 1).trim();
-    }
-    if (raw.startsWith('TextSpan(')) {
-      final match = RegExp(r'''text:\s*['"]?([^,\)\s]+)''').firstMatch(raw);
-      if (match != null) {
-        raw = match.group(1) ?? raw;
+    if (cellValue is IntCellValue) return cellValue.value.toString().trim();
+    if (cellValue is DoubleCellValue) return cellValue.value.toString().trim();
+    if (cellValue is BoolCellValue) return cellValue.value.toString().trim();
+    if (cellValue is DateCellValue) return cellValue.year.toString().trim();
+    try {
+      final val = (cellValue as dynamic).value;
+      if (val != null) {
+        if (val is String) return val.trim();
+        final textProp = (val as dynamic).text;
+        if (textProp != null) return textProp.toString().trim();
+        return val.toString().trim();
       }
-    }
-    return raw.trim();
+    } catch (_) {}
+    return cellValue.toString().trim();
   }
 }
 
