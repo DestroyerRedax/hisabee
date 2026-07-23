@@ -357,7 +357,7 @@ class XlsxImporter {
         return span.text!.trim();
       }
       final str = span.toString();
-      final match = RegExp(r'text:\s*["\']?([^,\)\s"\']+)', caseSensitive: false).firstMatch(str);
+      final match = RegExp(r'''text:\s*["']?([^,\)\s"']+)''', caseSensitive: false).firstMatch(str);
       if (match != null && match.group(1) != null) {
         return match.group(1)!.trim();
       }
