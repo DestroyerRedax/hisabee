@@ -39,14 +39,23 @@ class Profile {
     };
   }
 
+  static int _parseInt(dynamic val) {
+    if (val == null) return 0;
+    if (val is num) return val.toInt();
+    if (val is String) {
+      return (double.tryParse(val) ?? int.tryParse(val) ?? 0).toInt();
+    }
+    return 0;
+  }
+
   factory Profile.fromMap(Map<String, dynamic> map) {
     return Profile(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      colorValue: map['color_value'] as String?,
-      createdAt: map['created_at'] as int,
-      updatedAt: map['updated_at'] as int,
-      deletedAt: map['deleted_at'] as int?,
+      id: map['id'].toString(),
+      name: map['name'].toString(),
+      colorValue: map['color_value']?.toString(),
+      createdAt: _parseInt(map['created_at']),
+      updatedAt: _parseInt(map['updated_at']),
+      deletedAt: map['deleted_at'] != null ? _parseInt(map['deleted_at']) : null,
     );
   }
 }

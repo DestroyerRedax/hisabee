@@ -142,19 +142,28 @@ class Reminder {
     };
   }
 
+  static int _parseInt(dynamic val) {
+    if (val == null) return 0;
+    if (val is num) return val.toInt();
+    if (val is String) {
+      return (double.tryParse(val) ?? int.tryParse(val) ?? 0).toInt();
+    }
+    return 0;
+  }
+
   factory Reminder.fromMap(Map<String, dynamic> map) {
     return Reminder(
-      id: map['id'] as String,
-      title: map['title'] as String,
-      note: map['note'] as String,
-      scope: map['scope'] as String,
-      dueAt: map['due_at'] as int,
-      repeatRule: map['repeat_rule'] as String,
-      isFired: (map['is_fired'] as int) == 1,
-      isEnabled: (map['is_enabled'] as int) == 1,
-      createdAt: map['created_at'] as int,
-      updatedAt: map['updated_at'] as int,
-      deletedAt: map['deleted_at'] as int?,
+      id: map['id'].toString(),
+      title: map['title'].toString(),
+      note: map['note'].toString(),
+      scope: map['scope'].toString(),
+      dueAt: _parseInt(map['due_at']),
+      repeatRule: map['repeat_rule'].toString(),
+      isFired: _parseInt(map['is_fired']) == 1,
+      isEnabled: _parseInt(map['is_enabled']) == 1,
+      createdAt: _parseInt(map['created_at']),
+      updatedAt: _parseInt(map['updated_at']),
+      deletedAt: map['deleted_at'] != null ? _parseInt(map['deleted_at']) : null,
     );
   }
 }

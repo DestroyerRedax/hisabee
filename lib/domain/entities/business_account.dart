@@ -67,17 +67,26 @@ class BusinessAccount {
     };
   }
 
+  static int _parseInt(dynamic val) {
+    if (val == null) return 0;
+    if (val is num) return val.toInt();
+    if (val is String) {
+      return (double.tryParse(val) ?? int.tryParse(val) ?? 0).toInt();
+    }
+    return 0;
+  }
+
   factory BusinessAccount.fromMap(Map<String, dynamic> map) {
     return BusinessAccount(
-      id: map['id'] as String,
-      category: map['category'] as String,
-      title: map['title'] as String,
-      number: map['number'] as String?,
-      openingBalance: Money.fromMinorUnits(map['opening_minor'] as int),
-      closingBalance: Money.fromMinorUnits(map['closing_minor'] as int),
-      createdAt: map['created_at'] as int,
-      updatedAt: map['updated_at'] as int,
-      deletedAt: map['deleted_at'] as int?,
+      id: map['id'].toString(),
+      category: map['category'].toString(),
+      title: map['title'].toString(),
+      number: map['number']?.toString(),
+      openingBalance: Money.fromMinorUnits(_parseInt(map['opening_minor'])),
+      closingBalance: Money.fromMinorUnits(_parseInt(map['closing_minor'])),
+      createdAt: _parseInt(map['created_at']),
+      updatedAt: _parseInt(map['updated_at']),
+      deletedAt: map['deleted_at'] != null ? _parseInt(map['deleted_at']) : null,
     );
   }
 }
