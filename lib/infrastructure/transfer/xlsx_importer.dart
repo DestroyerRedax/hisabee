@@ -280,7 +280,11 @@ class XlsxImporter {
         final cellStr = _cellValToStr(cell?.value);
 
         if (cellStr.isEmpty) {
-          map[colName] = null;
+          if (colName == 'note') {
+            map[colName] = '';
+          } else {
+            map[colName] = null;
+          }
         } else {
           final trimmed = cellStr;
           if (colName == 'id' && trimmed.isEmpty) {
