@@ -153,12 +153,12 @@ class Reminder {
 
   factory Reminder.fromMap(Map<String, dynamic> map) {
     return Reminder(
-      id: map['id'].toString(),
-      title: map['title'].toString(),
-      note: map['note'].toString(),
-      scope: map['scope'].toString(),
+      id: map['id']?.toString() ?? '',
+      title: map['title']?.toString() ?? '',
+      note: map['note']?.toString() ?? '',
+      scope: map['scope']?.toString() ?? '',
       dueAt: _parseInt(map['due_at']),
-      repeatRule: map['repeat_rule'].toString(),
+      repeatRule: map['repeat_rule']?.toString() ?? '',
       isFired: _parseInt(map['is_fired']) == 1,
       isEnabled: _parseInt(map['is_enabled']) == 1,
       createdAt: _parseInt(map['created_at']),

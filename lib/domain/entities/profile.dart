@@ -50,8 +50,8 @@ class Profile {
 
   factory Profile.fromMap(Map<String, dynamic> map) {
     return Profile(
-      id: map['id'].toString(),
-      name: map['name'].toString(),
+      id: map['id']?.toString() ?? '',
+      name: map['name']?.toString() ?? '',
       colorValue: map['color_value']?.toString(),
       createdAt: _parseInt(map['created_at']),
       updatedAt: _parseInt(map['updated_at']),

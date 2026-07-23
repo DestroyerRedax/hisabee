@@ -78,9 +78,9 @@ class BusinessAccount {
 
   factory BusinessAccount.fromMap(Map<String, dynamic> map) {
     return BusinessAccount(
-      id: map['id'].toString(),
-      category: map['category'].toString(),
-      title: map['title'].toString(),
+      id: map['id']?.toString() ?? '',
+      category: map['category']?.toString() ?? '',
+      title: map['title']?.toString() ?? '',
       number: map['number']?.toString(),
       openingBalance: Money.fromMinorUnits(_parseInt(map['opening_minor'])),
       closingBalance: Money.fromMinorUnits(_parseInt(map['closing_minor'])),

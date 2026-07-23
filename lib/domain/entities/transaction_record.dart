@@ -93,15 +93,15 @@ class TransactionRecord {
 
   factory TransactionRecord.fromMap(Map<String, dynamic> map) {
     return TransactionRecord(
-      id: map['id'].toString(),
-      profileId: map['profile_id'].toString(),
+      id: map['id']?.toString() ?? '',
+      profileId: map['profile_id']?.toString() ?? '',
       displayParty: map['display_party']?.toString(),
       number: map['number']?.toString(),
       amount: Money.fromMinorUnits(_parseInt(map['amount_minor'])),
-      localDate: map['local_date'].toString(),
+      localDate: map['local_date']?.toString() ?? '',
       localTime: map['local_time']?.toString(),
-      method: map['method'].toString(),
-      direction: map['direction'].toString(),
+      method: map['method']?.toString() ?? '',
+      direction: map['direction']?.toString() ?? '',
       rawSource: map['raw_source']?.toString(),
       createdAt: _parseInt(map['created_at']),
       updatedAt: _parseInt(map['updated_at']),

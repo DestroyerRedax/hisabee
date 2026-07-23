@@ -106,16 +106,16 @@ class PersonalEntry {
 
   factory PersonalEntry.fromMap(Map<String, dynamic> map) {
     return PersonalEntry(
-      id: map['id'].toString(),
-      direction: map['direction'].toString(),
-      name: map['name'].toString(),
-      normalizedName: map['normalized_name'].toString(),
+      id: map['id']?.toString() ?? '',
+      direction: map['direction']?.toString() ?? '',
+      name: map['name']?.toString() ?? '',
+      normalizedName: map['normalized_name']?.toString() ?? '',
       phone: map['phone']?.toString(),
       normalizedPhone: map['normalized_phone']?.toString(),
       amount: Money.fromMinorUnits(_parseInt(map['amount_minor'])),
-      note: map['note'].toString(),
-      localDate: map['local_date'].toString(),
-      category: map['category'].toString(),
+      note: map['note']?.toString() ?? '',
+      localDate: map['local_date']?.toString() ?? '',
+      category: map['category']?.toString() ?? '',
       attachmentRef: map['attachment_ref']?.toString(),
       createdAt: _parseInt(map['created_at']),
       updatedAt: _parseInt(map['updated_at']),

@@ -70,11 +70,11 @@ class Expense {
 
   factory Expense.fromMap(Map<String, dynamic> map) {
     return Expense(
-      id: map['id'].toString(),
+      id: map['id']?.toString() ?? '',
       amount: Money.fromMinorUnits(_parseInt(map['amount_minor'])),
-      category: map['category'].toString(),
-      note: map['note'].toString(),
-      localDate: map['local_date'].toString(),
+      category: map['category']?.toString() ?? '',
+      note: map['note']?.toString() ?? '',
+      localDate: map['local_date']?.toString() ?? '',
       attachmentRef: map['attachment_ref']?.toString(),
       createdAt: _parseInt(map['created_at']),
       updatedAt: _parseInt(map['updated_at']),
